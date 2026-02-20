@@ -1,0 +1,114 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --color-ink: #0f172a;
+    --color-ink-muted: #475569;
+    --color-ink-faint: #94a3b8;
+    --color-surface: #faf8f5;
+    --color-surface-raised: #ffffff;
+    --color-border: #e8ecf1;
+    --color-accent: #4338ca;
+    --color-accent-soft: #e0e7ff;
+    --color-accent-hover: #3730a3;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+html {
+    scroll-behavior: smooth;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-body);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    line-height: 1.6;
+    letter-spacing: -0.011em;
+    min-height: 100vh;
+}
+
+/* Warm paper-like subtle gradient */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 60% 40% at 30% 20%, rgba(67, 56, 202, 0.03), transparent),
+        radial-gradient(ellipse 50% 50% at 70% 70%, rgba(251, 191, 36, 0.02), transparent);
+    pointer-events: none;
+    z-index: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+}
+
+p {
+    line-height: 1.7;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+::selection {
+    background: rgba(67, 56, 202, 0.12);
+    color: var(--color-ink);
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 8px;
+}
+
+a,
+button,
+input,
+select,
+textarea {
+    transition: all 0.2s ease;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+#root {
+    position: relative;
+    z-index: 1;
+}
