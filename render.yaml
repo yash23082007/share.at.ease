@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: share-at-ease-api
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node src/index.js
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: SERVER_SALT
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: PORT
+        value: 3001
+      - key: UPLOAD_DIR
+        value: ./uploads
+      - key: MAX_FILE_SIZE
+        value: 52428800
+      - key: DEFAULT_EXPIRY_MINUTES
+        value: 10
