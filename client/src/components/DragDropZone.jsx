@@ -1,18 +1,27 @@
 import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function DragDropZone({ onFileSelect, maxSize = 50 * 1024 * 1024, disabled = false }) {
+export default function DragDropZone({ onFileSelect, maxSize = 50 * 1024 * 1024, disabled = false, multiple = true }) {
     const [isDragging, setIsDragging] = useState(false);
     const [error, setError] = useState(null);
     const fileInputRef = useRef(null);
 
-    const handleFile = useCallback((file) => {
+    const handleFiles = useCallback((filesList) => {
         setError(null);
-        if (file.size > maxSize) {
-            setError(`File too large. Maximum size is ${Math.round(maxSize / 1024 / 1024)}MB.`);
-            return;
+        const validFiles = [];
+        
+        for (let i = 0; i < filesList.length; i++) {
+            const file = filesList[i];
+            if (file.size > maxSize) {
+                setError(`File ${file.name} is too large. Maximum size per file is ${Math.round(maxSize / 1024 / 1024)}MB.`);
+                continue;
+            }
+            validFiles.push(file);
         }
-        onFileSelect(file);
+
+        if (validFiles.length > 0) {
+            onFileSelect(validFiles);
+        }
     }, [maxSize, onFileSelect]);
 
     const handleDragOver = useCallback((e) => {
@@ -32,8 +41,14 @@ export default function DragDropZone({ onFileSelect, maxSize = 50 * 1024 * 1024,
         e.stopPropagation();
         setIsDragging(false);
         if (disabled) return;
-        if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
-    }, [disabled, handleFile]);
+        if (e.dataTransfer.files.length > 0) {
+            if (multiple) {
+                handleFiles(e.dataTransfer.files);
+            } else {
+                handleFiles([e.dataTransfer.files[0]]);
+            }
+        }
+    }, [disabled, handleFiles, multiple]);
 
     return (
         <div style={{ width: '100%' }}>
@@ -63,8 +78,17 @@ export default function DragDropZone({ onFileSelect, maxSize = 50 * 1024 * 1024,
                 <input
                     ref={fileInputRef}
                     type="file"
+                    multiple={multiple}
                     style={{ display: 'none' }}
-                    onChange={(e) => e.target.files?.length > 0 && handleFile(e.target.files[0])}
+                    onChange={(e) => {
+                        if (e.target.files?.length > 0) {
+                            if (multiple) {
+                                handleFiles(e.target.files);
+                            } else {
+                                handleFiles([e.target.files[0]]);
+                            }
+                        }
+                    }}
                     disabled={disabled}
                 />
 
@@ -80,10 +104,10 @@ export default function DragDropZone({ onFileSelect, maxSize = 50 * 1024 * 1024,
                 </motion.div>
 
                 <p style={{ fontSize: 14, fontWeight: 500, color: '#475569', marginBottom: 2 }}>
-                    {isDragging ? 'Drop it here' : 'Drop your file here'}
+                    {isDragging ? 'Drop files here' : 'Drop your files here'}
                 </p>
                 <p style={{ fontSize: 12, color: '#94a3b8' }}>
-                    or click to browse · max {Math.round(maxSize / 1024 / 1024)}MB
+                    or click to browse · max {Math.round(maxSize / 1024 / 1024)}MB per file
                 </p>
             </motion.div>
 
